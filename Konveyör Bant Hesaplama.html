@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)file:///Users/ekremcansirin/Downloads/konveyor-bant-hesaplama_2.html -->
+<html lang="tr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konveyör Bant Hesaplama</title>
+<link href="./Konveyör Bant Hesaplama_files/css2" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --surface: #161a23;
+    --card: #1e2330;
+    --border: #2a3040;
+    --accent: #f5a623;
+    --accent2: #e8520a;
+    --text: #e8ecf4;
+    --muted: #6b7590;
+    --success: #2ecc71;
+    --input-bg: #252b3a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0d0f14 0%, #1a1f2e 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 18px 20px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-icon {
+    width: 42px;
+    height: 42px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .header-icon svg { width: 24px; height: 24px; }
+
+  .header-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    line-height: 1.1;
+  }
+
+  .header-title span {
+    display: block;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* Main */
+  .main { padding: 20px 16px 100px; max-width: 480px; margin: 0 auto; }
+
+  /* Section label */
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 12px;
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Tambur count selector */
+  .tambur-selector {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .tambur-btn {
+    flex: 1;
+    padding: 12px 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .tambur-btn small {
+    font-size: 9px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .tambur-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+
+  .tambur-btn:hover:not(.active) {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  /* Input card */
+  .input-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .input-card-header {
+    background: var(--surface);
+    padding: 10px 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tambur-badge {
+    width: 22px;
+    height: 22px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 900;
+    color: #000;
+  }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .input-row:last-child { border-bottom: none; }
+
+  .input-label {
+    flex: 1;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .input-label small {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  .input-field-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--input-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 130px;
+    flex-shrink: 0;
+  }
+
+  .input-field-wrap:focus-within {
+    border-color: var(--accent);
+  }
+
+  .input-field-wrap input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 8px 10px;
+    width: 80px;
+    text-align: right;
+  }
+
+  .input-field-wrap input::placeholder { color: var(--muted); font-size: 14px; }
+
+  .input-unit {
+    background: var(--surface);
+    padding: 0 10px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 1px;
+    border-left: 1px solid var(--border);
+    min-height: 38px;
+  }
+
+  /* Mesafe grid */
+  .mesafe-grid {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .mesafe-grid-header {
+    background: var(--surface);
+    padding: 10px 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+
+
+  /* Hesapla button */
+  .calc-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 12px;
+    color: #000;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .calc-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(245,166,35,0.3); }
+  .calc-btn:active { transform: translateY(0); }
+
+  .calc-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .calc-btn:hover::after { opacity: 1; }
+
+  /* Sıfırla button */
+  .reset-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.15s;
+  }
+
+  .reset-btn:hover { border-color: var(--muted); color: var(--text); }
+
+  /* Sonuç */
+  .result-panel {
+    background: linear-gradient(135deg, #1a2510 0%, #162015 100%);
+    border: 1px solid #2d5a1e;
+    border-radius: 16px;
+    padding: 24px 20px;
+    margin-top: 20px;
+    display: none;
+    animation: slideUp 0.3s ease;
+  }
+
+  .result-panel.show { display: block; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-main {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .result-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--success);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .result-value {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 64px;
+    font-weight: 900;
+    color: var(--success);
+    line-height: 1;
+  }
+
+  .result-unit {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: var(--success);
+    opacity: 0.7;
+    margin-top: 4px;
+  }
+
+  .result-breakdown {
+    border-top: 1px solid #2d5a1e;
+    padding-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .breakdown-item {
+    background: rgba(0,0,0,0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  .breakdown-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .breakdown-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  /* Hata */
+  .error-msg {
+    background: #2a1010;
+    border: 1px solid #6b2020;
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: #ff6b6b;
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  .error-msg.show { display: block; }
+
+  /* Diyagram */
+  .diagram-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 4px;
+  }
+
+  .diagram-svg { width: 100%; height: auto; display: block; }
+
+  /* Formül notu */
+  .formula-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .formula-note strong { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="2.5" stroke-linecap="round">
+      <ellipse cx="5" cy="12" rx="3" ry="5"></ellipse>
+      <ellipse cx="19" cy="12" rx="3" ry="5"></ellipse>
+      <line x1="5" y1="7" x2="19" y2="7"></line>
+      <line x1="5" y1="17" x2="19" y2="17"></line>
+    </svg>
+  </div>
+  <div class="header-title">
+    Bant Hesaplama
+    <span>Konveyör Bant Uzunluğu</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- Diyagram -->
+  <div class="section-label">Sistem Diyagramı</div>
+  <div class="diagram-wrap">
+    <svg id="diagramSvg" class="diagram-svg" viewBox="0 0 360 120" xmlns="http://www.w3.org/2000/svg"><line x1="40" y1="40" x2="130" y2="40" stroke="#2ecc71" stroke-width="3" opacity="0.6"></line><line x1="40" y1="80" x2="130" y2="80" stroke="#2ecc71" stroke-width="3" opacity="0.6"></line><line x1="40" y1="108" x2="130" y2="108" stroke="#3a4560" stroke-width="1"></line><text x="85" y="118" text-anchor="middle" fill="#6b7590" font-size="9" font-family="Barlow Condensed">?</text><circle cx="40" cy="60" r="20" fill="none" stroke="#f5a623" stroke-width="2"></circle><circle cx="40" cy="60" r="3" fill="#f5a623"></circle><text x="40" y="35" text-anchor="middle" fill="#f5a623" font-size="10" font-family="Barlow Condensed" font-weight="700">T1</text><text x="40" y="92" text-anchor="middle" fill="#f5a623" font-size="8" font-family="Barlow Condensed">Ø?</text><circle cx="130" cy="60" r="20" fill="none" stroke="#e8520a" stroke-width="2"></circle><circle cx="130" cy="60" r="3" fill="#e8520a"></circle><text x="130" y="35" text-anchor="middle" fill="#e8520a" font-size="10" font-family="Barlow Condensed" font-weight="700">T2</text><text x="130" y="92" text-anchor="middle" fill="#e8520a" font-size="8" font-family="Barlow Condensed">Ø?</text></svg>
+  </div>
+
+  <!-- Tambur Sayısı -->
+  <div class="section-label">Tambur Sayısı</div>
+  <div class="tambur-selector">
+    <button class="tambur-btn active" onclick="setTamburCount(2)">
+      2
+      <small>Tambur</small>
+    </button>
+    <button class="tambur-btn" onclick="setTamburCount(3)">
+      3
+      <small>Tambur</small>
+    </button>
+    <button class="tambur-btn" onclick="setTamburCount(4)">
+      4
+      <small>Tambur</small>
+    </button>
+  </div>
+
+  <!-- Tambur Çapları -->
+  <div class="section-label">Tambur Çapları</div>
+  <div id="tamburInputs"><div class="input-card"><div class="input-row">
+      <div class="input-label">
+        <span class="tambur-badge">1</span>
+        Sürücü Tamburu (T1)
+        <small>Tambur dış çapı</small>
+      </div>
+      <div class="input-field-wrap">
+        <input type="number" id="cap0" placeholder="0" min="0" step="5" oninput="drawDiagram()">
+        <div class="input-unit">mm</div>
+      </div>
+    </div><div class="input-row">
+      <div class="input-label">
+        <span class="tambur-badge">2</span>
+        Kuyruk Tamburu (T2)
+        <small>Tambur dış çapı</small>
+      </div>
+      <div class="input-field-wrap">
+        <input type="number" id="cap1" placeholder="0" min="0" step="5" oninput="drawDiagram()">
+        <div class="input-unit">mm</div>
+      </div>
+    </div></div></div>
+
+  <!-- Mesafeler -->
+  <div class="section-label">Tambur Merkez Mesafeleri</div>
+  <div class="mesafe-grid" id="mesafeInputs"><div class="input-card-header">Merkez-Merkez Mesafeleri</div><div class="input-row" style="border-bottom: none;">
+      <div class="input-label">
+        T1 → T2 merkez mesafesi
+        <small>İki tambur merkezi arası</small>
+      </div>
+      <div class="input-field-wrap">
+        <input type="number" id="mes0" placeholder="0" min="0" step="10" oninput="drawDiagram()">
+        <div class="input-unit">mm</div>
+      </div>
+    </div></div>
+
+
+
+  <button class="calc-btn" onclick="hesapla()">⚡ Hesapla</button>
+  <button class="reset-btn" onclick="sifirla()">↺ Sıfırla</button>
+
+  <!-- Hata -->
+  <div class="error-msg" id="errorMsg"></div>
+
+  <!-- Sonuç -->
+  <div class="result-panel" id="resultPanel">
+    <div class="result-main">
+      <div class="result-label">✓ Hesaplanan Bant Uzunluğu</div>
+      <div class="result-value" id="resultValue">0</div>
+      <div class="result-unit">milimetre (mm)</div>
+    </div>
+    <div class="result-breakdown" id="resultBreakdown"></div>
+  </div>
+
+  <div class="formula-note">
+    <strong>Formül:</strong> Her tambur için yarı çevre (π × D/2) + tambur merkez mesafeleri toplamı × 2
+  </div>
+
+</div>
+
+<script>
+let tamburCount = 2;
+
+function setTamburCount(n) {
+  tamburCount = n;
+  document.querySelectorAll('.tambur-btn').forEach((b, i) => {
+    b.classList.toggle('active', i === n - 2);
+  });
+  renderInputs();
+  drawDiagram();
+}
+
+function renderInputs() {
+  // Tambur çap inputları
+  const tc = document.getElementById('tamburInputs');
+  tc.innerHTML = '';
+  const names = tamburCount === 2
+    ? ['Sürücü Tamburu (T1)', 'Kuyruk Tamburu (T2)']
+    : tamburCount === 3
+    ? ['Sürücü Tamburu (T1)', 'Kuyruk Tamburu (T2)', 'Gergi Tamburu (T3)']
+    : ['Sürücü (T1)', 'Kuyruk (T2)', 'Gergi (T3)', 'Saptırma (T4)'];
+
+  const card = document.createElement('div');
+  card.className = 'input-card';
+  names.forEach((name, i) => {
+    const row = document.createElement('div');
+    row.className = 'input-row';
+    row.innerHTML = `
+      <div class="input-label">
+        <span class="tambur-badge">${i+1}</span>
+        ${name}
+        <small>Tambur dış çapı</small>
+      </div>
+      <div class="input-field-wrap">
+        <input type="number" id="cap${i}" placeholder="0" min="0" step="5" oninput="drawDiagram()">
+        <div class="input-unit">mm</div>
+      </div>
+    `;
+    card.appendChild(row);
+  });
+  tc.appendChild(card);
+
+  // Mesafe inputları
+  const mc = document.getElementById('mesafeInputs');
+  mc.innerHTML = '';
+  const mHeader = document.createElement('div');
+  mHeader.className = 'input-card-header';
+  mHeader.textContent = 'Merkez-Merkez Mesafeleri';
+  mc.appendChild(mHeader);
+
+  // Mesafe sayısı: 2 tambur → 1 mesafe, 3 tambur → 2 mesafe, 4 tambur → 3 mesafe
+  // Ama bant devresini düşünürsek:
+  // Klasik konveyörde mesafe = tambur arası eksende ölçülen uzunluk
+  const mesafeCount = tamburCount - 1;
+  const mesafeNames = [];
+  for (let i = 0; i < mesafeCount; i++) {
+    mesafeNames.push(`T${i+1} → T${i+2} merkez mesafesi`);
+  }
+
+  mesafeNames.forEach((name, i) => {
+    const row = document.createElement('div');
+    row.className = 'input-row';
+    row.style.borderBottom = i < mesafeNames.length - 1 ? '1px solid var(--border)' : 'none';
+    row.innerHTML = `
+      <div class="input-label">
+        ${name}
+        <small>İki tambur merkezi arası</small>
+      </div>
+      <div class="input-field-wrap">
+        <input type="number" id="mes${i}" placeholder="0" min="0" step="10" oninput="drawDiagram()">
+        <div class="input-unit">mm</div>
+      </div>
+    `;
+    mc.appendChild(row);
+  });
+}
+
+function getValues() {
+  const caps = [];
+  for (let i = 0; i < tamburCount; i++) {
+    const v = parseFloat(document.getElementById('cap' + i)?.value || 0);
+    caps.push(isNaN(v) ? 0 : v);
+  }
+  const meses = [];
+  for (let i = 0; i < tamburCount - 1; i++) {
+    const v = parseFloat(document.getElementById('mes' + i)?.value || 0);
+    meses.push(isNaN(v) ? 0 : v);
+  }
+  return { caps, meses, kalinlik: 0 };
+}
+
+function hesapla() {
+  const errEl = document.getElementById('errorMsg');
+  const resEl = document.getElementById('resultPanel');
+  errEl.className = 'error-msg';
+  resEl.className = 'result-panel';
+
+  const { caps, meses, kalinlik } = getValues();
+
+  // Validasyon
+  if (caps.some(c => c <= 0)) {
+    errEl.textContent = '⚠ Tüm tambur çaplarını giriniz.';
+    errEl.className = 'error-msg show';
+    return;
+  }
+  if (meses.some(m => m <= 0)) {
+    errEl.textContent = '⚠ Tüm merkez mesafelerini giriniz.';
+    errEl.className = 'error-msg show';
+    return;
+  }
+
+  // Hesaplama
+  // Konveyör bant uzunluğu formülü:
+  // Bant = Σ(tambur yarı çevreleri) + Σ(düz bant mesafeleri)
+  //
+  // Her tamburun etrafını saran bant payı:
+  // - İki tambur sistemi: her tambur π × r_eff (yarım çevre)
+  // - Çok tamburlu: tambur sarım açılarına göre hesaplama
+  //
+  // Basitleştirilmiş (endüstri standardı 2 tambur için):
+  // L = 2 × C + π × (D1 + D2) / 2 + (D1 - D2)² / (4 × C)
+  // Burada C = merkez mesafesi, D1/D2 = çap (kalınlık eklenmiş)
+
+  let toplamBant = 0;
+  let parcaDetay = [];
+
+  if (tamburCount === 2) {
+    const D1 = caps[0] + 2 * kalinlik;
+    const D2 = caps[1] + 2 * kalinlik;
+    const C = meses[0];
+    // Klasik bant uzunluğu formülü
+    const L = 2 * C + Math.PI * (D1 + D2) / 2 + Math.pow(D1 - D2, 2) / (4 * C);
+    toplamBant = L;
+    parcaDetay = [
+      { label: 'Düz bant (×2)', val: (2 * C).toFixed(0) + ' mm' },
+      { label: 'Tambur çevreleri', val: (Math.PI * (D1 + D2) / 2).toFixed(0) + ' mm' },
+      { label: 'Sag düzeltme', val: (Math.pow(D1 - D2, 2) / (4 * C)).toFixed(1) + ' mm' },
+      { label: 'Merkez mesafesi', val: C.toFixed(0) + ' mm' },
+    ];
+  } else {
+    // Çok tamburlu: her tambur için π×r_eff (tam çevre / tambur sayısı yaklaşımı)
+    // Daha doğrusu: tüm tambur yarı çevreleri + tüm düz mesafeler × 2
+    let tamburPaylari = 0;
+    caps.forEach((c, i) => {
+      const r = (c + 2 * kalinlik) / 2;
+      tamburPaylari += Math.PI * r; // Her tambur ~yarım çevre
+    });
+
+    let mesafeToplam = meses.reduce((a, b) => a + b, 0);
+    // Bant her iki taraftan (üst ve alt kollar) geçer:
+    toplamBant = tamburPaylari + 2 * mesafeToplam;
+
+    caps.forEach((c, i) => {
+      const r = (c + 2 * kalinlik) / 2;
+      parcaDetay.push({ label: `T${i+1} sarım payı`, val: (Math.PI * r).toFixed(0) + ' mm' });
+    });
+    parcaDetay.push({ label: 'Düz mesafeler ×2', val: (2 * mesafeToplam).toFixed(0) + ' mm' });
+  }
+
+  document.getElementById('resultValue').textContent = toplamBant.toFixed(0);
+
+  const breakdown = document.getElementById('resultBreakdown');
+  breakdown.innerHTML = parcaDetay.map(p => `
+    <div class="breakdown-item">
+      <div class="breakdown-label">${p.label}</div>
+      <div class="breakdown-val">${p.val}</div>
+    </div>
+  `).join('') + `
+    <div class="breakdown-item" style="grid-column:1/-1;background:rgba(46,204,113,0.1);border:1px solid rgba(46,204,113,0.2)">
+      <div class="breakdown-label" style="color:var(--success)">Toplam bant uzunluğu</div>
+      <div class="breakdown-val" style="color:var(--success);font-size:22px">${toplamBant.toFixed(0)} mm = ${(toplamBant/1000).toFixed(3)} m</div>
+    </div>
+  `;
+
+  resEl.className = 'result-panel show';
+  resEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function sifirla() {
+  document.querySelectorAll('input[type=number]').forEach(i => i.value = '');
+  document.getElementById('resultPanel').className = 'result-panel';
+  document.getElementById('errorMsg').className = 'error-msg';
+  drawDiagram();
+}
+
+function drawDiagram() {
+  const { caps, meses } = getValues();
+  const svg = document.getElementById('diagramSvg');
+  const W = 360, H = 120;
+  const CY = 60;
+  const colors = ['#f5a623', '#e8520a', '#4a9eff', '#8b5cf6'];
+
+  // Tambur yarıçapları görsel ölçek
+  const maxR = 30;
+  const minR = 10;
+  const maxCap = Math.max(...caps.filter(c => c > 0), 400);
+  const scaleCap = (c) => {
+    if (c <= 0) return 20;
+    return minR + (c / maxCap) * (maxR - minR);
+  };
+
+  const radii = caps.map(scaleCap);
+
+  // Toplam görsel genişlik
+  let totalW = radii.reduce((a, b) => a + b * 2, 0);
+  const totalMes = meses.filter(m => m > 0).length;
+  const unitMes = totalMes > 0 ? (W - totalW - 40) / totalMes : (W - totalW - 40);
+  const mesScale = Math.max(unitMes, 20);
+
+  // Pozisyonlar
+  const positions = [];
+  let x = 20 + radii[0];
+  positions.push(x);
+  for (let i = 1; i < tamburCount; i++) {
+    x += radii[i - 1] + (meses[i - 1] > 0 ? mesScale : 50) + radii[i];
+    positions.push(x);
+  }
+
+  // SVG oluştur
+  let html = '';
+
+  // Bant çizgisi (üst)
+  if (positions.length >= 2) {
+    const x1 = positions[0], x2 = positions[positions.length - 1];
+    html += `<line x1="${x1}" y1="${CY - radii[0]}" x2="${x2}" y2="${CY - radii[positions.length-1]}" stroke="#2ecc71" stroke-width="3" opacity="0.6"/>`;
+    html += `<line x1="${x1}" y1="${CY + radii[0]}" x2="${x2}" y2="${CY + radii[positions.length-1]}" stroke="#2ecc71" stroke-width="3" opacity="0.6"/>`;
+  }
+
+  // Mesafe okları
+  for (let i = 0; i < positions.length - 1; i++) {
+    const x1 = positions[i], x2 = positions[i + 1];
+    const my = CY + 48;
+    html += `<line x1="${x1}" y1="${my}" x2="${x2}" y2="${my}" stroke="#3a4560" stroke-width="1"/>`;
+    html += `<text x="${(x1+x2)/2}" y="${my+10}" text-anchor="middle" fill="#6b7590" font-size="9" font-family="Barlow Condensed">${meses[i] > 0 ? meses[i]+'mm' : '?'}</text>`;
+  }
+
+  // Tambur daireleri
+  positions.forEach((px, i) => {
+    const r = radii[i];
+    const col = colors[i % colors.length];
+    html += `<circle cx="${px}" cy="${CY}" r="${r}" fill="none" stroke="${col}" stroke-width="2"/>`;
+    html += `<circle cx="${px}" cy="${CY}" r="3" fill="${col}"/>`;
+    html += `<text x="${px}" y="${CY - r - 5}" text-anchor="middle" fill="${col}" font-size="10" font-family="Barlow Condensed" font-weight="700">T${i+1}</text>`;
+    html += `<text x="${px}" y="${CY + r + 12}" text-anchor="middle" fill="${col}" font-size="8" font-family="Barlow Condensed">Ø${caps[i]>0?caps[i]:'?'}</text>`;
+  });
+
+  svg.innerHTML = html;
+}
+
+// Başlat
+renderInputs();
+drawDiagram();
+</script>
+
+
+</body></html>
